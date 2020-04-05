@@ -96,8 +96,13 @@ public class NystromGenerator : MonoBehaviour {
 
     void placePlayer()
     {
-        
-        for(int i = 0; i < dimensions; i++)
+
+        player = Instantiate(player);
+        player.name = "NPC";
+        player.tag = "Player";
+        player.layer = 13;
+
+        for (int i = 0; i < dimensions; i++)
         {
             for(int j = 0; j < dimensions; j++)
             {
@@ -114,6 +119,7 @@ public class NystromGenerator : MonoBehaviour {
         npc = Instantiate(npc);
         npc.name = "NPC";
         npc.tag = "NPC";
+        npc.layer = 14;
         //place npc on the opposite end
         for (int i = dimensions - 1; i >=0 ; i--)
         {
