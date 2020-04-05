@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4090840076844155086
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4090840076844155087}
+  - component: {fileID: 4090840076844155088}
+  m_Layer: 0
+  m_Name: LevelGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4090840076844155087
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4090840076844155086}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.26167342, y: -0.08558806, z: -0.09493568}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4090840076844155088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4090840076844155086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fb7a4e1e8d407d428cd95f3667a89bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grid: {fileID: 0}
+  tilemap: {fileID: 0}
+  WallTile: {fileID: 11400000, guid: decee8710fd9ca94ba50cc9e99ffa9ec, type: 2}
+  FloorTile: {fileID: 11400000, guid: 1e514505554b65f4dba52e61583ce34c, type: 2}
+  DoorTile: {fileID: 11400000, guid: 5c976bcf009892d4caa9faf2d9abc234, type: 2}
+  CorridorTile: {fileID: 11400000, guid: 3da53040f0d7daa4081e9f446895e6e8, type: 2}
+  wall: {fileID: 3601720251263782950, guid: 99968e763e0b229439c90bd0d98a2a94, type: 3}
+  floor: {fileID: 382562821885534012, guid: b50127587f1ad2d41bf99446dffb0857, type: 3}
+  door: {fileID: 7433648750129822325, guid: 6639994dc153dcc489399f5cf0db3eec, type: 3}
+  corridor: {fileID: 6481384509239137595, guid: c58261477053d5f44ae188ccd15ffe4b,
+    type: 3}
+  collectible1: {fileID: 7022658068917928686, guid: 377f11f8ef802a3438164585ffa49feb,
+    type: 3}
+  player: {fileID: 0}
+  npc: {fileID: 6588713147432427447, guid: 55de8b4171d38fc439f10c3e15504efb, type: 3}
+  dimensions: 25
+  numRoomTries: 50
+  extraConnectorChance: 3
+  extraRoomSize: 0
+  windingPercent: 15
+  removeDeadEnds: 1
+  seed: 0
