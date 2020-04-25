@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4090840076844155086
+--- !u!1 &511446075328058510
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4090840076844155087}
-  - component: {fileID: 4090840076844155088}
+  - component: {fileID: 511446075328058509}
+  - component: {fileID: 511446075328058508}
+  - component: {fileID: 511446075328058511}
   m_Layer: 0
   m_Name: LevelGenerator
-  m_TagString: Untagged
+  m_TagString: Generator
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4090840076844155087
+--- !u!4 &511446075328058509
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4090840076844155086}
+  m_GameObject: {fileID: 511446075328058510}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.26167342, y: -0.08558806, z: -0.09493568}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,13 +32,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4090840076844155088
+--- !u!114 &511446075328058508
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4090840076844155086}
+  m_GameObject: {fileID: 511446075328058510}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7fb7a4e1e8d407d428cd95f3667a89bf, type: 3}
@@ -54,14 +55,49 @@ MonoBehaviour:
   door: {fileID: 7433648750129822325, guid: 6639994dc153dcc489399f5cf0db3eec, type: 3}
   corridor: {fileID: 6481384509239137595, guid: c58261477053d5f44ae188ccd15ffe4b,
     type: 3}
-  collectible1: {fileID: 7022658068917928686, guid: 377f11f8ef802a3438164585ffa49feb,
+  collectible1: {fileID: 4527798995652508955, guid: 10edd1d52494535459648fdcc84f90a2,
     type: 3}
-  player: {fileID: 0}
-  npc: {fileID: 6588713147432427447, guid: 55de8b4171d38fc439f10c3e15504efb, type: 3}
+  showAllPaths: 1
+  pathRecalculateRate: 1
+  distanceToRecalculate: 10
+  PlayerPrefab: {fileID: 7091434473180714682, guid: f228750eb0bbb334085959bfb1f3dddb,
+    type: 3}
+  npcPrefab: {fileID: 4384189111023842148, guid: 55de8b4171d38fc439f10c3e15504efb,
+    type: 3}
+  endPlatformPrefab: {fileID: 2370509640207865880, guid: b535a5a1d0766544b8e56f7b64b26691,
+    type: 3}
   dimensions: 25
-  numRoomTries: 50
-  extraConnectorChance: 3
+  numRoomTries: 80
+  extraConnectorChance: 1
   extraRoomSize: 0
-  windingPercent: 15
+  windingPercent: 5
   removeDeadEnds: 1
   seed: 0
+--- !u!114 &511446075328058511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511446075328058510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  drawGizmos: 1
+  detailedGizmos: 0
+  startEndModifier:
+    addPoints: 0
+    exactStartPoint: 3
+    exactEndPoint: 3
+    useRaycasting: 0
+    mask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useGraphRaycasting: 0
+  traversableTags: -1
+  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask:
+    value: -1

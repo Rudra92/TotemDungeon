@@ -26,10 +26,10 @@ using Thread = System.Threading.Thread;
 [HelpURL("http://arongranberg.com/astar/docs/class_astar_path.php")]
 public class AstarPath : VersionedMonoBehaviour {
 	/// <summary>The version number for the A* %Pathfinding Project</summary>
-	public static readonly System.Version Version = new System.Version(4, 2, 12);
+	public static readonly System.Version Version = new System.Version(4, 2, 15);
 
 	/// <summary>Information about where the package was downloaded</summary>
-	public enum AstarDistribution { WebsiteDownload, AssetStore };
+	public enum AstarDistribution { WebsiteDownload, AssetStore, PackageManager };
 
 	/// <summary>Used by the editor to guide the user to the correct place to download updates</summary>
 	public static readonly AstarDistribution Distribution = AstarDistribution.WebsiteDownload;
@@ -40,7 +40,7 @@ public class AstarPath : VersionedMonoBehaviour {
 	/// users of the development versions can get notifications of development
 	/// updates.
 	/// </summary>
-	public static readonly string Branch = "master_Free";
+	public static readonly string Branch = "master";
 
 	/// <summary>
 	/// See Pathfinding.AstarData
@@ -826,6 +826,7 @@ public class AstarPath : VersionedMonoBehaviour {
 	/// See: Pathfinding.Path.DebugString
 	/// </summary>
 	private void LogPathResults (Path path) {
+        
 		if (logPathResults != PathLog.None && (path.error || logPathResults != PathLog.OnlyErrors)) {
 			string debug = path.DebugString(logPathResults);
 
@@ -834,9 +835,10 @@ public class AstarPath : VersionedMonoBehaviour {
 			} else if (path.error) {
 				Debug.LogWarning(debug);
 			} else {
-				//Debug.Log(debug);
+				Debug.Log(debug);
 			}
 		}
+        
 	}
 
 	/// <summary>

@@ -85,7 +85,7 @@ MonoBehaviour:
   grounDistance: 0.4
   groundMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 33024
 --- !u!143 &7091434473180714681
 CharacterController:
   m_ObjectHideFlags: 0

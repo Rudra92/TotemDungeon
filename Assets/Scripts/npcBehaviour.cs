@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(AIDestinationSetter))]
 [RequireComponent(typeof(AIPath))]
@@ -53,13 +54,14 @@ public class npcBehaviour : MonoBehaviour
         GameObject generator = GameObject.FindGameObjectWithTag("Generator");
         levelGen = generator.GetComponent<NystromGenerator>();
         rooms = levelGen.mRooms;
-        collectibleRooms = levelGen.ImportantRoomsByIndex;
+        collectibleRooms = levelGen.CollectibleRooms;
         // initialise useful variables
         isChasingPlayer = false;
         player = GameObject.FindGameObjectWithTag("Player");
         playerPos = GameObject.FindGameObjectWithTag("Player").transform;
         chaseCounter = timeToRecheck;
 
+        //Start NPC behaviour
         StartCoroutine("behaviourRoutine");
     }
 
@@ -75,7 +77,7 @@ public class npcBehaviour : MonoBehaviour
 
     void updateBehaviour()
     {
-        Debug.Log(chaseCounter);
+
         // if there is currently a path
         if (path.hasPath)
         {
@@ -141,10 +143,23 @@ public class npcBehaviour : MonoBehaviour
         chaseCounter = timeToRecheck;
         npcDst.transform.position = levelGen.getRoomCenter(currRoom);
         AIDst.target = npcDst.transform;
-        path.maxSpeed = seekSpeed;
-        currRoom = (currRoom + 1) % rooms.Count;
-        isChasingPlayer = false;
 
+        GraphNode node1 = AstarPath.active.GetNearest(transform.position, NNConstraint.Default).node;
+        GraphNode node2 = AstarPath.active.GetNearest(npcDst.transform.position, NNConstraint.Default).node;
+
+        if (!PathUtilities.IsPathPossible(node1, node2))
+        {
+            Debug.Log("NPC Impossible path");
+            //todo  change behaviour if game not possible
+            SceneManager.LoadScene("Main");
+            
+        }
+
+        path.maxSpeed = seekSpeed;
+        do {
+            currRoom = (currRoom + 1) % rooms.Count;
+        } while (currRoom == levelGen.getFinalRoom());
+        isChasingPlayer = false;
     }
 
     bool checkForPlayer()
@@ -178,15 +193,6 @@ public class npcBehaviour : MonoBehaviour
         }
         return false;
 
-    }
-
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.magenta; // the color used to detect the player in front
-        Gizmos.DrawRay(this.transform.position, this.transform.forward * rayDistance);
-        Gizmos.color = Color.yellow; // the color used to detect the player from behind
-        Gizmos.DrawRay(this.transform.position, this.transform.forward * -2f );
     }
 
 }
