@@ -158,7 +158,7 @@ public class npcBehaviour : MonoBehaviour
         path.maxSpeed = seekSpeed;
         do {
             currRoom = (currRoom + 1) % rooms.Count;
-        } while (currRoom == levelGen.getFinalRoom());
+        } while (currRoom == levelGen.getInitialRoom());
         isChasingPlayer = false;
     }
 

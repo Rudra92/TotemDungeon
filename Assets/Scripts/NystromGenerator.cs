@@ -1,8 +1,7 @@
 ﻿using Pathfinding;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
+using System.Collections.ObjectModel;using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -28,16 +27,17 @@ public class NystromGenerator : MonoBehaviour {
     public Tile FloorTile;
     public Tile DoorTile;
     public Tile CorridorTile;
-
-    int scale = 4;
-
+    [HideInInspector]
+    public int scale = 4;
 
     public GameObject wall;
     public GameObject floor;
     public GameObject door;
     public GameObject corridor;
     public GameObject collectible1;
-
+    public GameObject PlayerPrefab;
+    public GameObject npcPrefab;
+    public GameObject endPlatformPrefab;
 
     public bool showAllPaths;
 
@@ -45,67 +45,58 @@ public class NystromGenerator : MonoBehaviour {
     public float distanceToRecalculate = 10;
     private Vector3 playerOldPosition;
 
-
-    public GameObject PlayerPrefab;
-    public GameObject npcPrefab;
-    public GameObject endPlatformPrefab;
-
     private GameObject currPlayer, currNPC, currPlatform;
 
-
-    private int[,] data;
-    private int[,] regions;
-    private int currRegion = -1;
-
-    public int dimensions = 51;
-
-    public int numRoomTries = 0;
-    public int extraConnectorChance = 10;
-
-    public int extraRoomSize = 0;
-    public int windingPercent = 50;
-
-    public bool removeDeadEnds = false;
-
-    public int seed = 0;
-
-    // essential containers
-    public List<Rect> mRooms { get; private set; }
-    private List<Vector3> doorPositions;
-
-
-    private int collectibles = 5;
-    public List<GameObject> mCollectibles { get; private set; }
-    public HashSet<int> CollectibleRooms { get; private set; }
-    private int finalRoomIdx;
     private List<Pathfinding.Path> importantPaths;
 
     public bool smoothPath = false;
     private GameController gameController;
+    private AudioManager am;
     private SimpleSmoothModifier smoother;
     private HashSet<Vector3> intersections;
 
+    public bool refinePlacement = true;
+    public float soundCloseness = 15f;
+    public float refineIterations = 7f;
+
+    // variables for actual level generation
+    private int[,] data;
+    private int[,] regions;
+    private int currRegion = -1;
+    public int dimensions = 51;
+    public int numRoomTries = 0;
+    public int extraConnectorChance = 10;
+    public int extraRoomSize = 0;
+    public int windingPercent = 50;
+    public bool removeDeadEnds = false;
     private ReadOnlyCollection<int> Directions;
-
-
+    public List<Rect> mRooms { get; private set; }
+    private List<Vector3> doorPositions;
     Rect mBounds;
     LevelGrid<int> mRegions;
     LevelGrid<TileType> mLevelGrid; // store the tiles we'll use for later placement
     int mCurrentRegion = -1;
-
+    public int seed = 0;
     private GameObject Level;
+    private bool placements = false;
+
+    private int collectibles = 4;
+    public List<GameObject> mCollectibles { get; private set; }
+    public HashSet<int> CollectibleRooms { get; private set; }
+    private int finalRoomIdx;
+
     private Seeker mSeeker;
-
     private bool pathComplete = false;
-    private bool alreadySaved = false;
 
-    private AudioManager audioManager;
+    //save/load variables
+    private bool alreadySaved = false;
+    private bool loadCollectibles = false;
 
     private void Awake()
     {
-        audioManager = FindObjectOfType<AudioManager>();
         mSeeker = GetComponent<Seeker>();
         gameController = FindObjectOfType<GameController>();
+        am = FindObjectOfType<AudioManager>();
 
 
         if (seed != 0)
@@ -132,18 +123,28 @@ public class NystromGenerator : MonoBehaviour {
             SaveLevel();
             alreadySaved = true;
         }
+        
+        
     }
+
+    public List<Pathfinding.Path> getPaths()
+    {
+        return importantPaths;
+    }
+
+
+    public bool readyToPlace() { return placements; }
 
     private bool checkInsideRoom(Vector3 pos, Rect r)
     {
         Vector3 roomCenter = getRoomCenter(r);
-        Vector3 TopLeft = new Vector3(roomCenter.x - r.width / 2 * scale, 4, roomCenter.z - r.height / 2 * scale);
-        Vector3 BotRight = new Vector3(roomCenter.x + r.width / 2 * scale, 4, roomCenter.z + r.height / 2 * scale);
+        Vector2 TopLeft = new Vector3(roomCenter.x - r.width / 2 * scale, roomCenter.z - r.height / 2 * scale);
+        Vector2 BotRight = new Vector3(roomCenter.x + r.width / 2 * scale, roomCenter.z + r.height / 2 * scale);
 
         if ((pos.x < TopLeft.x) ||
             (pos.x > BotRight.x) ||
-            (pos.z < TopLeft.z) ||
-            (pos.z > BotRight.z))
+            (pos.z < TopLeft.y) ||
+            (pos.z > BotRight.y))
         {
             return false;
         }
@@ -153,9 +154,11 @@ public class NystromGenerator : MonoBehaviour {
 
     private bool nearDoor(Vector3 pos)
     {
+        Vector2 pos2D = new Vector2(pos.x, pos.z);
         foreach(Vector3 p in doorPositions)
         {
-            if( (p - pos).magnitude < 0.5f)
+            Vector2 p2D = new Vector2(p.x, p.z);
+            if( (p2D - pos2D).magnitude < 0.5f)
             {
                 return true;
             }
@@ -242,7 +245,7 @@ public class NystromGenerator : MonoBehaviour {
         return calculateRoomCenter(room);
     }
 
-    public int getFinalRoom()
+    public int getInitialRoom()
     {
         return finalRoomIdx;
     }
@@ -259,7 +262,7 @@ public class NystromGenerator : MonoBehaviour {
         // small offsets;
         pos.x += 3f;
         pos.y = 3;
-        pos.z += 9;
+        pos.z += 11;
 
         currPlayer.transform.position = pos;
         currPlayer.transform.forward = new Vector3(0, 0, -1);
@@ -267,9 +270,22 @@ public class NystromGenerator : MonoBehaviour {
         playerOldPosition = currPlayer.transform.position;
     }
 
+    public void drawRoom(Rect r)
+    {
+        Debug.DrawLine(new Vector3(r.x, 2, r.y) * scale, new Vector3(r.x + r.width,2, r.y) * scale);
+        Debug.DrawLine(new Vector3(r.x, 2, r.y) * scale, new Vector3(r.x ,2,  r.y + r.height) * scale);
+    }
+
+    public void drawRoom(int rid)
+    {
+        Rect r = mRooms[rid];
+        drawRoom(r);
+    }
+
     void placeCollectibles()
     {
-        
+      
+        GameObject collectiblesContainer = new GameObject(); collectiblesContainer.name = "Collectibles";
         //choose 3 distinct random numbers representing important rooms
         while(CollectibleRooms.Count < collectibles)
         {
@@ -285,11 +301,15 @@ public class NystromGenerator : MonoBehaviour {
         //place collectibles
         foreach (int i in CollectibleRooms)
         {
+            //draw room
+
             Vector3 collPos = getRoomCenter(i);
             GameObject collectible = Instantiate(collectible1, collPos, Quaternion.identity);
+            collectible.transform.parent = collectiblesContainer.transform;
             collectible.name = "Totem Piece";
             collectible.layer = 12;
             collectible.tag = "Collectible";
+            collectible.layer = LayerMask.NameToLayer("Collectibles");
             mCollectibles.Add(collectible);
         }
 
@@ -348,11 +368,16 @@ public class NystromGenerator : MonoBehaviour {
         if (p.error)
         {
             // Nooo, a valid path couldn't be found
-            Debug.Log("No path found, restarting game");
+            Debug.LogError("No path found, restarting game");
             Restart();
         }
         
 
+    }
+
+    public Vector2 getLevelBoundaries()
+    {
+        return new Vector2(dimensions, dimensions) * scale;
     }
 
     private void findSoundSpots()
@@ -439,44 +464,65 @@ public class NystromGenerator : MonoBehaviour {
             }
         }
         Debug.Log("Raw number of spots : " + intersections.Count);
-        for (int i = 0; i < 5; i++)
+
+        if(refinePlacement)
         {
-            refineSoundSpots();
+            /*
+            for (int i = 0; i < refineIterations; i++)
+            {
+                refineSoundSpots();
+            }
+            */
+            int iter = 1;
+            float closeFactor = soundCloseness;
+            while(iter <= refineIterations) {
+                iter++;
+                refineSoundSpots(closeFactor,  intersections, 1);
+                closeFactor *= 0.9f;
+            }
+
+            Debug.Log("Refined number of spots:" + intersections.Count);
         }
-        Debug.Log("Refined number of spots:" + intersections.Count);
+        
 
 
     }
 
-    private void refineSoundSpots()
+    public void refineSoundSpots(float closeFactor, HashSet<Vector3> collection, int option)
     {
         HashSet<Vector3> toBeRemoved = new HashSet<Vector3>();
         HashSet<Vector3> toBeAdded = new HashSet<Vector3>();
 
-        foreach(var b in intersections)
+        /*
+        if (option == 1)
         {
-            if (IsInsideAnyRoom(b))
+            foreach(var b in collection)
             {
-                toBeRemoved.Add(b);
+                if (IsInsideAnyRoom(b))
+                {
+                    toBeRemoved.Add(b);
+                }
             }
         }
+        
+        */
 
         foreach (var v in toBeRemoved)
         {
-            intersections.Remove(v);
+            collection.Remove(v);
         }
 
-        foreach (Vector3 a in intersections)
+        foreach (Vector3 a in collection)
         {
             Vector2 a_ = new Vector2(a.x, a.z);
-            foreach(Vector3 b in intersections)
+            foreach(Vector3 b in collection)
             {
 
                 Vector2 b_ = new Vector2(b.x, b.z);
                 if(a != b && !toBeRemoved.Contains(b))
                 {
-                    // check if they are close enough
-                    if((a_- b_).magnitude < 5f)
+                    // check if they are close enough only using x,z axes
+                    if((a_- b_).magnitude < closeFactor)
                     {
                         toBeRemoved.Add(b);
 
@@ -488,28 +534,22 @@ public class NystromGenerator : MonoBehaviour {
 
         foreach(var v in toBeRemoved)
         {
-            intersections.Remove(v);
+            collection.Remove(v);
         }
 
         foreach(var v in toBeAdded)
         {
-            intersections.Add(v);
+            collection.Add(v);
         }
 
      
     }
-
-    public void OnDrawGizmos()
+    
+    public HashSet<Vector3> getSoundPlacements()
     {
-        Gizmos.color = Color.black;
-        if (intersections == null) return;
-
-        foreach (Vector3 v in intersections)
-        {
-            if(!IsInsideAnyRoom(v))
-                Gizmos.DrawSphere(v, 2f);
-        }
+        return intersections;
     }
+   
 
     private void ShowPaths()
     {
@@ -570,8 +610,12 @@ public class NystromGenerator : MonoBehaviour {
             smoothPaths();
         }
 
-        //  calculate inersections
-        findSoundSpots();
+        //  calculate intersections
+        if(gameController.option1)
+        {
+            findSoundSpots();
+        }
+        placements = true;
     }
 
     void printRegion(int[,] reg)
@@ -676,7 +720,7 @@ public class NystromGenerator : MonoBehaviour {
             for (int y = 0; y < mLevelGrid.Height; y++)
             {
                 {
-                    var position = new Vector3Int(x, y, 0);
+                    var gridPosition = new Vector3Int(x, y, 0);
                     var roofPos = new Vector3Int(x, 2, y);
                     var realPos = new Vector3(x, 0, y);
 
@@ -687,11 +731,11 @@ public class NystromGenerator : MonoBehaviour {
                     Roof.transform.localScale *= scale;
                     Roof.layer = 9;
 
-                    switch (mLevelGrid[x,y])
+                    switch (mLevelGrid[x, y])
                     {
                         case TileType.Wall:
-                            tilemap.SetTile(position, WallTile);
-                            
+                            tilemap.SetTile(gridPosition, WallTile);
+
                             var Wall = Instantiate(wall, new Vector3(realPos.x, wallOffset, realPos.z) * scale, Quaternion.identity);
                             Wall.name = "Wall";
                             Wall.transform.SetParent(Level.transform);
@@ -700,7 +744,7 @@ public class NystromGenerator : MonoBehaviour {
                             Wall.tag = "Wall";
                             break;
                         case TileType.RoomFloor:
-                            tilemap.SetTile(position, FloorTile);
+                            tilemap.SetTile(gridPosition, FloorTile);
                             var Floor = Instantiate(floor, realPos * scale, Quaternion.identity);
                             Floor.name = "Floor";
                             Floor.transform.SetParent(Level.transform);
@@ -708,7 +752,7 @@ public class NystromGenerator : MonoBehaviour {
                             Floor.transform.localScale *= scale;
                             break;
                         case TileType.CorridorFloor:
-                            tilemap.SetTile(position, FloorTile);
+                            tilemap.SetTile(gridPosition, FloorTile);
                             var Corridor = Instantiate(corridor, realPos * scale, Quaternion.identity);
                             Corridor.name = "Corridor";
                             Corridor.transform.SetParent(Level.transform);
@@ -717,7 +761,7 @@ public class NystromGenerator : MonoBehaviour {
                             break;
                         case TileType.OpenDoor:
                         case TileType.ClosedDoor:
-                            tilemap.SetTile(position, CorridorTile);
+                            tilemap.SetTile(gridPosition, CorridorTile);
                             var Door = Instantiate(door, realPos * scale, Quaternion.identity);
                             Door.name = "Door";
                             Door.transform.SetParent(Level.transform);
@@ -729,16 +773,28 @@ public class NystromGenerator : MonoBehaviour {
 
                             break;
                         default:
-                            tilemap.SetTile(position, FloorTile);
+                            tilemap.SetTile(gridPosition, FloorTile);
                             break;
                     }
 
                 }
             }
-       
-        yield return null;
-    }
 
+        yield return null;
+
+    }
+    public bool IsPosValid(Vector2 pos)
+    {
+        var toModel = pos / scale;
+        if (pos.x < 0 || pos.y < 0) return false;
+        if (System.Math.Ceiling( toModel.x ) < 0 ||
+            System.Math.Ceiling(toModel.x) >= dimensions ||
+            System.Math.Ceiling(toModel.y) < 0 ||
+            System.Math.Ceiling( toModel.y ) >= dimensions) return false;
+
+        return true;
+
+    }
     //Growing tree maze
     void GrowMaze(Vector2Int start)
     {
@@ -1095,22 +1151,24 @@ public class NystromGenerator : MonoBehaviour {
 
     }
 
-    private void Restart()
+    public void Restart()
     {
         SceneManager.LoadScene("Main");
     }
 
-    public void setupGame(int _collectibles, bool npc, bool load)
+    public void setupGame(int _collectibles, bool npc, bool load, bool loadColl)
     {
 
+        loadCollectibles = loadColl;
         if (!load)
         {
+            ///generation
             Generate(dimensions, dimensions);
         } else
         {
+            //loading
             Debug.Log("Loading Level from data");
             LoadLevel();
-
         }
         Debug.Log("Fill Initial Room..");
         fillFinalRoom();
@@ -1126,15 +1184,16 @@ public class NystromGenerator : MonoBehaviour {
 
         AstarPath.FindAstarPath();
         AstarPath.active.Scan();
-
-        StartCoroutine("calculatePaths");
+        if(showAllPaths)
+        {
+            StartCoroutine("calculatePaths");
+        }
 
     }
 
     // save and load a pre generated level
     private void LoadLevel()
     {
-        mRooms = new List<Rect>();
         
         // Load saved Level prefab
         GameObject prefab = AssetDatabase.LoadAssetAtPath(saveLevelPath + "Level.prefab", typeof(GameObject)) as GameObject;
@@ -1151,44 +1210,86 @@ public class NystromGenerator : MonoBehaviour {
         //Load Rooms
 
         var info = new DirectoryInfo(saveRoomsPath);
-        var roomFileInfo = info.GetFiles("*.room");
-        foreach (var file in roomFileInfo)
-        {
-        
-            StreamReader roomReader = new StreamReader(file.FullName);
-            var sStrings = roomReader.ReadToEnd().Split(","[0]);
+        var roomFileInfo = info.GetFiles("*.rooms");
+        if (roomFileInfo.Length == 0) Debug.LogError("Could not load rooms from save file .rooms. Issues may occur.");
 
-            Rect r = new Rect(
-                float.Parse(sStrings[0]),
-                float.Parse(sStrings[1]),
-                float.Parse(sStrings[2]),
-                float.Parse(sStrings[3])
-                );
-            mRooms.Add(r);
+        // will only read the first but will not cause problem if there is more or none
+        foreach (var file in roomFileInfo)
+        { 
+            StreamReader roomReader = new StreamReader(file.FullName);
+            var sStrings = roomReader.ReadToEnd().Split("\n"[0]);
+
+            foreach (string s in sStrings)
+            {
             
+                if (s == "")  continue; 
+
+                var values = s.Split(","[0]);
+                Rect r = new Rect(
+                float.Parse(values[0]),
+                float.Parse(values[1]),
+                float.Parse(values[2]),
+                float.Parse(values[3])
+                );
+                mRooms.Add(r);
+            }
+            roomReader.Close();
         }
+        
 
         //load door positions
         var doorFileInfo = info.GetFiles("*.doorPos");
         doorPositions = new List<Vector3>();
+        if (doorFileInfo.Length == 0) Debug.LogError("Could not load door positions from save file .doorPos. Issues may occur.");
 
-        StreamReader doorReader = new StreamReader(doorFileInfo[0].FullName);
-        var dStrings = doorReader.ReadToEnd().Split("\n"[0]);
-
-        foreach(string s in dStrings)
+        // will only read the first but will not cause problem if there is more or none
+        foreach (var file in doorFileInfo)
         {
-            if (s == "") { continue; }
+            StreamReader doorReader = new StreamReader(doorFileInfo[0].FullName);
+            var dStrings = doorReader.ReadToEnd().Split("\n"[0]);
 
-            var values = s.Split(","[0]);
-            Vector3 pos = new Vector3(
-                    float.Parse(values[0]),
-                    float.Parse(values[1]),
-                    float.Parse(values[2])
-                );
-            doorPositions.Add(pos);
+            foreach(string s in dStrings)
+            {
+                if (s == "")  continue; 
 
+                var values = s.Split(","[0]);
+                Vector3 pos = new Vector3(
+                        float.Parse(values[0]),
+                        float.Parse(values[1]),
+                        float.Parse(values[2])
+                    );
+                doorPositions.Add(pos);
+            }
+            doorReader.Close();
+            break;
         }
 
+        if(loadCollectibles)
+        {
+            //Load Collectible positions
+            var collFileInfo = info.GetFiles("*.collectibles");
+            if (collFileInfo.Length == 0) Debug.LogError("Could not load collectibles from save file .collectibles. Issues may occur.");
+
+            // will only read the first but will not cause problem if there is more or none
+            foreach (var file in collFileInfo)
+            {
+
+                StreamReader collReader = new StreamReader(collFileInfo[0].FullName);
+
+                var cStrings = collReader.ReadToEnd().Split("\n"[0]);
+
+                foreach (string s in cStrings)
+                {
+                    if (s == "") { continue; }
+                    int roomId = int.Parse(s);
+                    CollectibleRooms.Add(roomId);
+                }
+                collReader.Close();
+                break;
+            }
+        }
+
+ 
     }
 
     private void SaveLevel()
@@ -1214,27 +1315,35 @@ public class NystromGenerator : MonoBehaviour {
             FileUtil.DeleteFileOrDirectory(saveRoomsPath);
         }
         Directory.CreateDirectory(saveRoomsPath);
-        foreach (var p in mRooms.Select((value, index) => new { value, index }) )
+        string filename = saveRoomsPath + ".rooms";
+        StreamWriter writer = new StreamWriter(filename, true);
+
+        foreach (var p in mRooms)
         {
 
-            string filename = saveRoomsPath+p.index + ".room";
-      
-            //Write some text to the test.txt file
-            StreamWriter writer = new StreamWriter(filename, true);
-
-            writer.WriteLine(p.value.x +","+ p.value.y + ","+ p.value.width + "," + p.value.height);
-   
-            writer.Close();
+            writer.WriteLine(p.x +","+ p.y + ","+ p.width + "," + p.height);
         }
+        writer.Close();
 
         //save door positions
-        string file = saveRoomsPath + ".doorPos";
-        StreamWriter doorWriter = new StreamWriter(file, true);
+        string doorfile = saveRoomsPath + ".doorPos";
+        StreamWriter doorWriter = new StreamWriter(doorfile, true);
         foreach (var p in doorPositions)
         {
             doorWriter.WriteLine(p.x + "," + p.y + "," +p.z);
         }
-        
         doorWriter.Close();
+
+        //save collectibles positions
+        string collectiblesfile = saveRoomsPath + ".collectibles";
+        StreamWriter collWriter = new StreamWriter(collectiblesfile, true);
+        foreach (var p in CollectibleRooms)
+        {
+            collWriter.WriteLine(p);
+        }
+        collWriter.Close();
+
+     
+
     }
 }

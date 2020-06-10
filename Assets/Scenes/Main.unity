@@ -133,7 +133,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 658735634}
-  - component: {fileID: 658735633}
+  - component: {fileID: 658735635}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -141,26 +141,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &658735633
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 658735632}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56e2a79089aef054389713afc19803c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sounds:
-  - name: 
-    clip: {fileID: 8300000, guid: f9ab345a6cec233499c8da60a58fb5b7, type: 3}
-    volume: 0.115
-    pitch: 0.86
-    loop: 1
-    spatialBlend: 1
-    source: {fileID: 0}
 --- !u!4 &658735634
 Transform:
   m_ObjectHideFlags: 0
@@ -169,12 +149,326 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 658735632}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 48.713886, y: -19.046875, z: 44.12153}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &658735635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 658735632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c235ddb7371294eb9ef01a1a2d4999, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberPlacedSounds: 12
+  theme:
+    name: theme
+    tensionLevel: 0
+    valenceLevel: 0
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: f9ab345a6cec233499c8da60a58fb5b7, type: 3}
+    volume: 0.005
+    pitch: 0.93
+    loop: 1
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 1
+  sounds:
+  - name: tension0
+    tensionLevel: 1
+    valenceLevel: 3
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: 814b043b8b4ad3b4fa1e86cc9007faff, type: 3}
+    volume: 0.05
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension1
+    tensionLevel: 1
+    valenceLevel: 4
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: 393d594fef047d441afb1bd1212f6e4b, type: 3}
+    volume: 0.05
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension2
+    tensionLevel: 1
+    valenceLevel: 2
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: 62440d281d8457843b5d5978f99de65e, type: 3}
+    volume: 0.05
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension3
+    tensionLevel: 1
+    valenceLevel: 2
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: 115787369ab18bf4ca1f2de025c4aa0f, type: 3}
+    volume: 0.046
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension4
+    tensionLevel: 1
+    valenceLevel: 2
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: 4d4d8c78bd803cf48b803e4c4843fbed, type: 3}
+    volume: 0.05
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension5
+    tensionLevel: 2
+    valenceLevel: 4
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: 427163e7713813a488fb0d9ddd6c4658, type: 3}
+    volume: 0.054
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension6
+    tensionLevel: 2
+    valenceLevel: 3
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: a2305d163ed1fd94ebfcc8c8406a4dfe, type: 3}
+    volume: 0.043
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension7
+    tensionLevel: 2
+    valenceLevel: 4
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: 0f037d56a2b344a4f8f8c7e8f22b1a26, type: 3}
+    volume: 0.05
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension8
+    tensionLevel: 2
+    valenceLevel: 1
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: dccaf61ee2fd2344eb0e95d905aaf917, type: 3}
+    volume: 0.043
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension9
+    tensionLevel: 2
+    valenceLevel: 4
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: 8ef528dbd5b27d54fbf8bfd02c4bc685, type: 3}
+    volume: 0.051
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension10
+    tensionLevel: 2
+    valenceLevel: 3
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: 7c79c75b92ad83d4e96a75653735c96a, type: 3}
+    volume: 0.05
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension11
+    tensionLevel: 3
+    valenceLevel: 3
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: a561dac4fd2ae0442b286cfc249a90d8, type: 3}
+    volume: 0.05
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension12
+    tensionLevel: 3
+    valenceLevel: 4
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: c4ffca17c3e18cc4baab90b408f8768b, type: 3}
+    volume: 0.046
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension13
+    tensionLevel: 3
+    valenceLevel: 1
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: 8734ff4182bf8cc428cfcbc4b2745987, type: 3}
+    volume: 0.066
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension14
+    tensionLevel: 3
+    valenceLevel: 3
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: 864e3c751e1a029478854cb6f402d676, type: 3}
+    volume: 0.043
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension15
+    tensionLevel: 3
+    valenceLevel: 3
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: e3a5216908527254296093dabc155991, type: 3}
+    volume: 0.05
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension16
+    tensionLevel: 4
+    valenceLevel: 2
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: 2c4f0ec2713049240b0f3f53e3a45caf, type: 3}
+    volume: 0.058
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension17
+    tensionLevel: 4
+    valenceLevel: 2
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: 922a0c0a0842d804c93cc587b6c78a20, type: 3}
+    volume: 0.058
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension18
+    tensionLevel: 4
+    valenceLevel: 2
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: ad50532622fac9d489ade438ba37fd21, type: 3}
+    volume: 0.043
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension19
+    tensionLevel: 4
+    valenceLevel: 1
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: c9197fbdeee462c4482c6223aad097a3, type: 3}
+    volume: 0.066
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension20
+    tensionLevel: 4
+    valenceLevel: 1
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: 700a087aaf1372d458dc503ba8fe124f, type: 3}
+    volume: 0.066
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
+  - name: tension21
+    tensionLevel: 4
+    valenceLevel: 1
+    arousalLevel: 0
+    clip: {fileID: 8300000, guid: 14a4a5fc01b0bd441ac4aec2f70bda90, type: 3}
+    volume: 0.066
+    pitch: 1
+    loop: 0
+    spatialBlend: 0
+    source: {fileID: 0}
+    interval: 0
+    startTime: 0
+    endTime: 0
 --- !u!1 &834411383
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,14 +500,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelGenerator: {fileID: 250578429}
   loadLevel: 1
+  loadCollectibles: 1
   save: 0
-  playerSpeed: 0
+  playerSpeed: 5
   npcChaseSpeed: 6
   npcSeekSpeed: 3
+  randomAlgorithm: 0
+  option1: 0
+  option2: 1
   test: 0
-  collectibles: 5
-  collected: 0
+  simulation: 1
+  iterations: 25
+  repCrit: 1
+  countCrit: 1
+  covCrit: 1
+  progCrit: 1
+  overCrit: 1
   npcEnabled: 0
+  collectibles: 4
+  collected: 0
   generated: 0
 --- !u!4 &834411385
 Transform:
@@ -228,6 +533,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &993747712
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 993747714}
+  - component: {fileID: 993747713}
+  m_Layer: 0
+  m_Name: IteratorCounter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &993747713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 993747712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d53d8b1978638a94c87853e88323ad6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  counter: 0
+--- !u!4 &993747714
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 993747712}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 55.405304, y: -12.65625, z: 52.617676}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1913429946
 PrefabInstance:
@@ -255,6 +604,31 @@ PrefabInstance:
         type: 3}
       propertyPath: smoothPath
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 511446075328058508, guid: f5783f0a4e87aa54eb976a1ea1f610d3,
+        type: 3}
+      propertyPath: soundCloseness
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 511446075328058508, guid: f5783f0a4e87aa54eb976a1ea1f610d3,
+        type: 3}
+      propertyPath: refinePlacement
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 511446075328058508, guid: f5783f0a4e87aa54eb976a1ea1f610d3,
+        type: 3}
+      propertyPath: showAllPaths
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 511446075328058508, guid: f5783f0a4e87aa54eb976a1ea1f610d3,
+        type: 3}
+      propertyPath: refineIterations
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 511446075328058508, guid: f5783f0a4e87aa54eb976a1ea1f610d3,
+        type: 3}
+      propertyPath: dimensions
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 511446075328058509, guid: f5783f0a4e87aa54eb976a1ea1f610d3,
         type: 3}
@@ -338,7 +712,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2034859617}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 58.31, y: 2.5, z: 7.9}
+  m_LocalPosition: {x: 0, y: 2.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -358,7 +732,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAAAIIeyROfDrZAIAAAYFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFlVE1z2jAQ/SuMzg2DMDaht5YA6SEfE9rJxRchrbEGWfJIcoBk+O+VZDl2yMnyvre7bz+kD8SlqYFapTeaswfFAP0cIX9GP0Y9eA8nsldyy9+h47xyZktPIoHzQixXzo69m1EVWM3pL7kXnjxxxkbyQulqxfawVMYaZy6IMOAgraz3ls70MUKn6HCO33f/HV3ciYK0oHvWbD6eLmbJLJKn4zRL5vMs+szS8TzD2WyaBudGUkGqGpgvoo+BkyS6u1MgSldg5PhiqBKCm6gO2XMdqt/WJWjw5TNOXLFBlo9UAt+X1qsZ+j4VhQEbC9LkfMe161kbFP1WbSMrYg6tsDciGp8muV3gaRDVhn34xrjBAS60qu67zHjis9iS08MLOVNi7KDXQ/NdLx2HDh2JOJCdgNcS5KPaaNVI5kCrG+/aGJjeDUJ9VrcsgR56Xqu1M3bspv4+XtyP9xIacFoKXu0iw/1uhQr9xrfjubOAdrP54xSHdTGR56xexT8Df8l+uFcRWHNtrINiQunl7VSjPRWt3cE3nzZ2qbSEYI2F1CCJsOdnF8VeD/EKG2S9QtbEX6CYO2LdvbhyCeaeP5lcQc/q+DksU6rjA5jyqbGCS+hFe+DRtWmppGx3zHwFvde20QWhA699w9nXzULFLC0YxukkSRfJLoMbXKQZXhQZAzah6Y6hsHpcujKJeG51xu64qck+uHRr1j0ro40mdVh3pslxw98rNdDHZaG2VAPIpzZC1yED2iVxt5KtGHf92YK1XIZpo48cCUUPwPLPQHmodHWymuR9lBzV/E1Zb8nRMjwmObqgy39QSwMEFAAACAgAAAgh7HiDr1NtAAAAeAAAAAkAJABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGrVipLLSrOzM9TslIw0TPSMzTVUVBKL0osyCgGihiCOKWZKSB2tFKaiWlaiqGhqYGxqaVxklmqrmGaqZmhZZpZSmqKQbJpUopSLFB9SWVBql9ibipET0BiSUZaZl5KZl66nntRZoo7yGil2FoAUEsBAi0AFAAACAgAAAgh7JE58OtkAgAABgUAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAAAgh7HiDr1NtAAAAeAAAAAkAJAAAAAAAAAAAAAAAsQIAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAABpAwAAAAA=
+    dataString: UEsDBBQAAAgIAAAIIezjCMEAZQIAAAgFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFlVE1z2jAQ/SuMzg1jQQyht5YkpId8TGgnF1+EtcYaZMkjyQGS4b93JcvYISfL+97uvv2QPolQtobcabMygj9qDuTniPgz+THqwQc4sK1Wa/EBHedNcFd6EgucV+aERjv1blZX4IzIf6mt9OQEjY0ShTbVHd/CUltn0VwwaQEho533Vmj6HJFDdDjG74f/jk54ykE5MD0rnY+TeULpNY30yTidTefzWfRK0/GE0kk6XwT3RuWSVTVwX0YfhU6n0R1PgaiwxMjxkXMtpbBRH3HHOtS/rksw4BvABcNygzAfqQSxLZ1XM/R9LgoLLpZk2PFWGOxaG5T81m0rK2Z3rbB3JhufZnqzoJMgqg37+I1xRQNcGF09dJlp4rO4UuS7V3bMmXWDbg/Nt710Gjq0Z3LHNhLeSlBPemV0oziCzjTetbEwuR2EOle3LCHf9bxWa2fs2E39fcC0H/ApNOCwlKLaRAb+rqUO/aY34zlawOBs/qDisDA28tDqVfyz8Jdth5sVgXthrEMoJlRe3kY3xlPJPR588/PGLbVREKyxkBoUk+74glHc5RAvsEHWC+Se+SsUc0esuxkXLsHc85PkAnrR+/OwbKn3j2DL58ZJoaAX7YEnbNNSK9XumP0Keq91YwqWD7y2jeBfN4sU12nBKU2TabqYbmZwRYt0RhfFjANP8nTDSVg9obBMJl9anbE7ODXVB1e4Zt3DMloZVod154btV+Kj0gN9QhV6nRsA9dxG6DpkwWASvJX8jgvszxqcEypMm3xmROp8Bzw7B8pCpXcHZ1jWR8lILd6185aMLMNzkpETOf0HUEsDBBQAAAgIAAAIIex4g69TbQAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz0jM01VFQSi9KLMgoBooYgjilmSkgdrRSmolpWoqhoamBsamlcZJZqq5hmqmZoWWaWUpqikGyaVKKUixQfUllQapfYm4qRE9AYklGWmZeSmZeup57UWaKO8hopdhaAFBLAQItABQAAAgIAAAIIezjCMEAZQIAAAgFAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAAAIIex4g69TbQAAAHgAAAAJACQAAAAAAAAAAAAAALICAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAAagMAAAAA
     upgradeData: 
     file_cachedStartup: {fileID: 0}
     data_cachedStartup: 
