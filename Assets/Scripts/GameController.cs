@@ -33,12 +33,14 @@ public class GameController : MonoBehaviour
     [HideInInspector]
     public float countCrit = 1f;
     [HideInInspector]
+    public float roomCovCrit = 1f;
+    [HideInInspector]
     public float covCrit = 1f;
     [HideInInspector]
     public float progCrit = 1f;
     [HideInInspector]
     public float overCrit = 1f;
-    
+
     [HideInInspector]
     public bool npcEnabled = false;
     [HideInInspector]
@@ -171,6 +173,7 @@ public class EditorGUIGameController : Editor
     //criteria
     SerializedProperty rep_crit_prop;
     SerializedProperty count_crit_prop;
+    SerializedProperty roomCov_crit_prop;
     SerializedProperty cover_crit_prop;
     SerializedProperty prog_crit_prop;
     SerializedProperty overlap_crit_prop;
@@ -198,7 +201,7 @@ public class EditorGUIGameController : Editor
         cover_crit_prop = serializedObject.FindProperty("covCrit");
         prog_crit_prop = serializedObject.FindProperty("progCrit");
         overlap_crit_prop = serializedObject.FindProperty("overCrit");
-
+        roomCov_crit_prop = serializedObject.FindProperty("roomCovCrit");
     }
 
     public override void OnInspectorGUI()
@@ -212,7 +215,8 @@ public class EditorGUIGameController : Editor
             EditorGUILayout.PropertyField(simulation_iter, new GUIContent("Simulation Iterations"));
             EditorGUILayout.PropertyField(rep_crit_prop, new GUIContent("Repetition Criterion weight"));
             EditorGUILayout.PropertyField(count_crit_prop, new GUIContent("Count Criterion weight"));
-            EditorGUILayout.PropertyField(cover_crit_prop, new GUIContent("Coverage Criterion weight"));
+            EditorGUILayout.PropertyField(cover_crit_prop, new GUIContent("Path Cover. Criterion weight"));
+            EditorGUILayout.PropertyField(roomCov_crit_prop, new GUIContent("Room Cover. Criterion weight"));
             EditorGUILayout.PropertyField(prog_crit_prop, new GUIContent("Coherence Criterion weight"));
             EditorGUILayout.PropertyField(overlap_crit_prop, new GUIContent("Overlap Criterion weight"));
         }

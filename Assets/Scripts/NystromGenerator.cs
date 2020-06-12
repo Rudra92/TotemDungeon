@@ -141,10 +141,12 @@ public class NystromGenerator : MonoBehaviour {
         Vector2 TopLeft = new Vector3(roomCenter.x - r.width / 2 * scale, roomCenter.z - r.height / 2 * scale);
         Vector2 BotRight = new Vector3(roomCenter.x + r.width / 2 * scale, roomCenter.z + r.height / 2 * scale);
 
-        if ((pos.x < TopLeft.x) ||
-            (pos.x > BotRight.x) ||
-            (pos.z < TopLeft.y) ||
-            (pos.z > BotRight.y))
+        float approximation = 0.5f;
+
+        if ((pos.x  < TopLeft.x - approximation) ||
+            (pos.x > BotRight.x + approximation) ||
+            (pos.z < TopLeft.y - approximation) ||
+            (pos.z > BotRight.y + approximation))
         {
             return false;
         }
@@ -377,7 +379,7 @@ public class NystromGenerator : MonoBehaviour {
 
     public Vector2 getLevelBoundaries()
     {
-        return new Vector2(dimensions, dimensions) * scale;
+        return new Vector2(dimensions - 1, dimensions - 1) * scale;
     }
 
     private void findSoundSpots()

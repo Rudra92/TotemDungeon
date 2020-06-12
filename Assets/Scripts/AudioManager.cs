@@ -23,6 +23,9 @@ public class AudioManager : MonoBehaviour
 
     [HideInInspector]
     public Dictionary<String, EvalContainer> soundMap; // vector contains play count
+    [HideInInspector]
+    public Dictionary<Vector3, bool> spotMap;
+    private bool initSpots = false;
 
     [HideInInspector]
     private NystromGenerator levelGen;
@@ -81,6 +84,21 @@ public class AudioManager : MonoBehaviour
             }
         }
         */
+
+        
+        if(spotMap != null)
+        {
+            Gizmos.color = Color.blue;
+            foreach(var s in spotMap)
+            {
+                if(s.Value)
+                {
+                    Gizmos.DrawSphere(s.Key, 3f);
+                }
+
+            }
+        }
+        
     }
 
     // code taken at : http://csharphelper.com/blog/2014/09/determine-where-two-circles-intersect-in-c/ 
@@ -146,6 +164,7 @@ public class AudioManager : MonoBehaviour
     void Awake()
     {
         soundMap = new Dictionary<String, EvalContainer>();
+        spotMap = new Dictionary<Vector3, bool>();
         levelGen = FindObjectOfType<NystromGenerator>();
         gc = FindObjectOfType<GameController>();
         //DontDestroyOnLoad(gameObject);
@@ -364,9 +383,9 @@ public class AudioManager : MonoBehaviour
     {
         Vector2 bounds = levelGen.getLevelBoundaries();
         // find position randomly
-        float x = UnityEngine.Random.Range(0f, bounds.x - 1); ;
-        float y = UnityEngine.Random.Range(0f, 6f);
-        float z = UnityEngine.Random.Range(0f, bounds.y - 1);
+        float x = UnityEngine.Random.Range(0f, bounds.x ); ;
+        float y = 6f;
+        float z = UnityEngine.Random.Range(0f, bounds.y);
         Vector3 soundPos = new Vector3(x, y, z);
         // pick sound randomly
         int idx = UnityEngine.Random.Range(0, sounds.Length - 1);
@@ -384,7 +403,16 @@ public class AudioManager : MonoBehaviour
         {
             placeRandomSound();
         }
-
+        if (!initSpots)
+        {
+            initSpots = true;
+            var spots = GameObject.FindGameObjectsWithTag("Sound");
+            // initialise spot map
+            foreach (var s in spots)
+            {
+                spotMap.Add(s.transform.position, false);
+            }
+        }
     }
 
     // OPTION 1 : this algorithm will pick random sounds and place them using paths and intersections,
@@ -424,6 +452,17 @@ public class AudioManager : MonoBehaviour
 
         //update number of actually placed sounds
         numberPlacedSounds = placed;
+
+        if(!initSpots)
+        {
+            initSpots = true;
+            var spots = GameObject.FindGameObjectsWithTag("Sound");
+            // initialise spot map
+            foreach(var s in spots)
+            {
+                spotMap.Add(s.transform.position, false);
+            }
+        }
         
 
     }
@@ -558,6 +597,17 @@ public class AudioManager : MonoBehaviour
 
         //update number of actually placed sounds
         numberPlacedSounds = placedSounds;
+
+        if (!initSpots)
+        {
+            initSpots = true;
+            var spots = GameObject.FindGameObjectsWithTag("Sound");
+            // initialise spot map
+            foreach (var s in spots)
+            {
+                spotMap.Add(s.transform.position, false);
+            }
+        }
     }
 
 }

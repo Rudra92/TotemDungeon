@@ -203,7 +203,7 @@ public class AIAgent : MonoBehaviour
         if (gc.option2) alg += "2";
         if (gc.randomAlgorithm) alg += "random";
 
-        string evalFile = "Level/Eval/" + alg  + ".eval";
+        string evalFile = "Level/Eval/" + alg  + ".txt";
         System.IO.StreamWriter evalWriter = new System.IO.StreamWriter(evalFile, true);
         
 
@@ -226,12 +226,11 @@ public class AIAgent : MonoBehaviour
 
         int nbTracksPlayed = 0;
         Debug.Log(am.numberPlacedSounds);
-        float maxCountCriteria = gc.option1 ? am.numberPlacedSounds * 4 : am.numberPlacedSounds;
+        float maxCountCriteria = am.numberPlacedSounds;
 
         // iterate over sound map to compute some criterias
         foreach(var pair in am.soundMap)
         {
-
             string name = pair.Key;
             EvalContainer ec = pair.Value;
 
@@ -290,32 +289,66 @@ public class AIAgent : MonoBehaviour
 
         }
 
-        countCriteria = nbTracksPlayed/ maxCountCriteria;
+        // count nhumber of triggered sounds
+        int count = 0;
+        foreach(var s in am.spotMap)
+        {
+            if(s.Value)
+            {
+                count++;
+            }
+        }
+
+        countCriteria = count / (float)am.spotMap.Count;
 
         float maxRepetitiveCriteria = (nbTracksPlayed * 2);
-        repetitiveCriteria = repetitiveCriteria < 0 ? 0 :  repetitiveCriteria / maxRepetitiveCriteria;
 
-        float maxCoherenceCriteria = maxRepetitiveCriteria;
-        progressionCoherenceCriteria /= maxCoherenceCriteria; 
+        if(maxRepetitiveCriteria != 0)
+        {
+            repetitiveCriteria = repetitiveCriteria < 0 ? 0 :  repetitiveCriteria / maxRepetitiveCriteria;
+            float maxCoherenceCriteria = maxRepetitiveCriteria;
+            progressionCoherenceCriteria /= maxCoherenceCriteria;
+        }
+        else
+        {
+            repetitiveCriteria = 0;
+            progressionCoherenceCriteria = 0;
+        }
+
+        
 
         Debug.Log("Count Criteria score : " + countCriteria);
         Debug.Log("Repetitive Criteria score : " + repetitiveCriteria);
         Debug.Log("Level Coherence Criteria score : " + progressionCoherenceCriteria);
 
-        evalWriter.WriteLine("Count Criteria score : " + countCriteria);
-        evalWriter.WriteLine("Repetitive Criteria score : " + repetitiveCriteria);
-        evalWriter.WriteLine("Level Coherence Criteria score : " + progressionCoherenceCriteria);
-
-
+       
         //coverage - 
-        //1. Total walkable level coverage
+        var soundObjects = GameObject.FindGameObjectsWithTag("Sound");
 
+        //1. Room coverage
+        HashSet<Rect> coveredRooms = new HashSet<Rect>();
 
+        foreach (var so in soundObjects)
+        {
+            foreach(var room in levelgen.mRooms)
+            {
+                if (levelgen.IsInsideRoom(so.transform.position, room))
+                {
+                    coveredRooms.Add(room);
+                    break;
+                }
+            }
+        }
+
+        float roomCoverageCriteria = coveredRooms.Count / (float)(levelgen.mRooms.Count);
+
+        // if 2/3 of the rooms are covered we get the highest score 
+        roomCoverageCriteria = MapValue(0f, 0.75f, 0f, 1f, roomCoverageCriteria);
+        Debug.Log("Room coverage : " + roomCoverageCriteria);
 
         //2. Important path coverage
         List<float> pathCoverage = new List<float>();
         var paths = levelgen.getPaths();
-        var soundObjects = GameObject.FindGameObjectsWithTag("Sound");
         var gg = AstarPath.active.data.gridGraph;
 
         foreach (var p in paths)
@@ -351,20 +384,18 @@ public class AIAgent : MonoBehaviour
         pathCoverageCriteria = MapValue(0f, 0.5f, 0f, 1f, pathCoverageCriteria);
 
         Debug.Log("Path Coverage Criteria score : avg coverage : " + avgPathCoverage + " ->  score:" + pathCoverageCriteria);
-        evalWriter.WriteLine("Path Coverage Criteria score : avg coverage : " + avgPathCoverage + " ->  score:" + pathCoverageCriteria);
-
 
 
         // Overlap score
         Debug.Log("Overlapped " + am.getOverlapCount() + " times");
         float overlapCriteria = MapValue(0,am.numberPlacedSounds,1,0, am.getOverlapCount());
         Debug.Log("Overlap Criteria : " + overlapCriteria);
-        evalWriter.WriteLine("Overlap Criteria : " + overlapCriteria);
 
         float weights = 
             gc.countCrit +
             gc.repCrit +
             gc.covCrit +
+            gc.roomCovCrit +
             gc.progCrit +
             gc.overCrit;
 
@@ -372,12 +403,24 @@ public class AIAgent : MonoBehaviour
             countCriteria * gc.countCrit +
             repetitiveCriteria * gc.repCrit +
             pathCoverageCriteria * gc.covCrit +
+            roomCoverageCriteria * gc.roomCovCrit +
             progressionCoherenceCriteria * gc.progCrit +
             overlapCriteria * gc.overCrit;
         totalScore /= weights;
 
-        evalWriter.WriteLine("Total score : " + totalScore);
-        evalWriter.WriteLine("------------------------------------------");
+
+        // Count,Repetition,PathCoverage,RoomCoverage,Progression,Overlap
+        evalWriter.WriteLine(
+            countCriteria + "," +
+            repetitiveCriteria + "," +
+            pathCoverageCriteria + "," +
+            roomCoverageCriteria + "," +
+            progressionCoherenceCriteria + "," +
+            overlapCriteria + "," +
+            totalScore + "," +
+            maxCountCriteria
+
+        );
         evalWriter.Close();
 
         return totalScore;

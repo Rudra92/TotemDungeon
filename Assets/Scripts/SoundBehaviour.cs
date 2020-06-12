@@ -74,6 +74,11 @@ public class SoundBehaviour : MonoBehaviour
                 int progression = gc.collected;
                 am.incrementSoundPlayedCount(m_sound, progression);
 
+                
+               am.spotMap[transform.position] = true; 
+               
+                //  add to spotMap
+
                 StartCoroutine(timeout(10f));
 
                 
